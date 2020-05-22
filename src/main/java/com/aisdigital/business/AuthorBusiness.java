@@ -27,9 +27,9 @@ public class AuthorBusiness {
     public ResponseEntity<ResponseModelMsg> findById(String idAuthor) {
         Author author = baseRepository.getAuthors().stream().filter(a -> a.getId().equals(idAuthor)).findAny().orElse(null);
         if (author != null) {
-            return new ResponseEntity<>(new ResponseModelMsg("Registro encontrado.", 5, author), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro encontrado.", 1, author), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 5), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 2), HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<ResponseModelMsg> save(Author author) {
@@ -39,15 +39,15 @@ public class AuthorBusiness {
             } else {
 
                 if (HttpStatus.OK == findById(author.getId()).getStatusCode()) {
-                    return new ResponseEntity<>(new ResponseModelMsg("Id do autor já foi utilizado", 5), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ResponseModelMsg("Id do autor já foi utilizado", 9), HttpStatus.BAD_REQUEST);
                 }
             }
             if (author.getName() == null || author.getName().isEmpty()) {
-                return new ResponseEntity<>(new ResponseModelMsg("Nome do autor deve ser preechido", 5), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ResponseModelMsg("Nome do autor deve ser preechido", 8), HttpStatus.BAD_REQUEST);
             }
 
             baseRepository.getAuthors().add(author);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 5, author), HttpStatus.CREATED);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 3, author), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor: " + e.getMessage(), 99), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -56,20 +56,20 @@ public class AuthorBusiness {
     public ResponseEntity<ResponseModelMsg> update(Author author) {
         try {
             if (author.getId() == null || author.getId().isEmpty()) {
-                return new ResponseEntity<>(new ResponseModelMsg("Id do Autor deve ser preechido.", 5), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ResponseModelMsg("Id do Autor deve ser preechido.", 6), HttpStatus.BAD_REQUEST);
             }
 
             if (HttpStatus.OK != findById(author.getId()).getStatusCode()) {
-                return new ResponseEntity<>(new ResponseModelMsg("Id do Autor deve existir.", 5), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ResponseModelMsg("Id do Autor deve existir.", 7), HttpStatus.BAD_REQUEST);
             }
 
             if (author.getName() == null || author.getName().isEmpty()) {
-                return new ResponseEntity<>(new ResponseModelMsg("Nome do Autor deve ser preechido.", 5), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ResponseModelMsg("Nome do Autor deve ser preechido.", 8), HttpStatus.BAD_REQUEST);
             }
 
             baseRepository.getAuthors().remove(author);
             baseRepository.getAuthors().add(author);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 5, author), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 3, author), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor:"+ e.getMessage(), 99), HttpStatus.INTERNAL_SERVER_ERROR);
         }

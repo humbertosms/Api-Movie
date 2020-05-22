@@ -47,7 +47,7 @@ public class MovieBusiness {
         if (movie != null) {
             return new ResponseEntity<>(new ResponseModelMsg("Registro encontrado.", 1, movie), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 1), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 2), HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<ResponseModelMsg> save(MovieVMInput movie) {
@@ -71,7 +71,7 @@ public class MovieBusiness {
             fillData(movie, filmeSave);
 
             baseRepository.getMovies().add(filmeSave);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 1, filmeSave), HttpStatus.CREATED);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 3, filmeSave), HttpStatus.CREATED);
         } catch (Exception e) {
             msgRetorno.add("Erro no servidor: " + e.getMessage());
             return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -143,6 +143,6 @@ public class MovieBusiness {
             baseRepository.getMovies().remove(deleteItem.getBody().getData());
             return new ResponseEntity<>(new ResponseModelMsg("Registro excluido com sucesso.", 1), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 1), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 2), HttpStatus.BAD_REQUEST);
     }
 }
