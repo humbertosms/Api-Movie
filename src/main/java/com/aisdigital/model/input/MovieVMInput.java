@@ -3,7 +3,7 @@ package com.aisdigital.model.input;
 import io.swagger.annotations.ApiModelProperty;
 
 public class MovieVMInput {
-    @ApiModelProperty(example = "")
+    @ApiModelProperty(example = "Mov999")
     private String id;
     @ApiModelProperty(example = "Filme de terror")
     private String name;

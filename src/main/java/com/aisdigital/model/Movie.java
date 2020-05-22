@@ -1,7 +1,9 @@
 package com.aisdigital.model;
 
+import java.util.Objects;
+
 public class Movie {
-    public String id;
+    private String id;
     private String name;
     private Author author;
     private MovieCategory category;
@@ -45,5 +47,18 @@ public class Movie {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id.equals(movie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

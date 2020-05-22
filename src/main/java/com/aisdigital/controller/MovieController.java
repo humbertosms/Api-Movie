@@ -22,22 +22,27 @@ public class MovieController {
     }
 
     @GetMapping(produces = "application/json")
-    List<Movie> findAll() {
+    public List<Movie> findAll() {
         return movieBusiness.findAll();
     }
 
     @GetMapping(value = "/{movieId}", produces = "application/json")
-    ResponseEntity<Movie> findById(@PathVariable String movieId) {
+    public ResponseEntity<ResponseModelMsg> findById(@PathVariable String movieId) {
         return movieBusiness.findById(movieId);
     }
 
     @PostMapping( produces = "application/json")
-    ResponseEntity<Movie> save(@RequestBody MovieVMInput movie) {
+    public ResponseEntity<ResponseModelMsg> save(@RequestBody MovieVMInput movie) {
         return movieBusiness.save(movie);
     }
 
+    @PutMapping( produces = "application/json")
+    public ResponseEntity<ResponseModelMsg> update(@RequestBody MovieVMInput movie) {
+        return movieBusiness.update(movie);
+    }
+
     @DeleteMapping(value = "/{movieId}", produces = "application/json")
-    ResponseEntity<ResponseModelMsg> delete(@PathVariable String movieId) {
+    public ResponseEntity<ResponseModelMsg> delete(@PathVariable String movieId) {
         return movieBusiness.deleteById(movieId);
     }
 }

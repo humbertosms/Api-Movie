@@ -20,27 +20,27 @@ public class AuthorController {
     }
 
     @GetMapping(produces = "application/json")
-    List<Author> findAll() {
+    public List<Author> findAll() {
         return authorBusiness.findAll();
     }
 
     @GetMapping(value = "/{authorId}", produces = "application/json")
-    ResponseEntity<ResponseModelMsg> findById(@PathVariable String authorId) {
+    public ResponseEntity<ResponseModelMsg> findById(@PathVariable String authorId) {
         return authorBusiness.findById(authorId);
     }
 
     @PostMapping(produces = "application/json")
-    ResponseEntity<ResponseModelMsg> save(@RequestBody Author author) {
+    public ResponseEntity<ResponseModelMsg> save(@RequestBody Author author) {
         return authorBusiness.save(author);
     }
 
     @PutMapping(produces = "application/json")
-    ResponseEntity<ResponseModelMsg> update(@RequestBody Author author) {
+    public ResponseEntity<ResponseModelMsg> update(@RequestBody Author author) {
         return authorBusiness.update(author);
     }
 
     @DeleteMapping(value = "/{movieId}", produces = "application/json")
-    ResponseEntity<ResponseModelMsg> delete(@PathVariable String movieId) {
+    public ResponseEntity<ResponseModelMsg> delete(@PathVariable String movieId) {
         return authorBusiness.deleteById(movieId);
     }
 }

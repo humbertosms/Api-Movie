@@ -3,6 +3,7 @@ package com.aisdigital.business;
 import com.aisdigital.model.Author;
 import com.aisdigital.model.Movie;
 import com.aisdigital.model.MovieCategory;
+import com.aisdigital.model.ResponseModelMsg;
 import com.aisdigital.model.input.MovieVMInput;
 import com.aisdigital.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MovieBusiness  {
+public class MovieBusiness {
 
     private AuthorBusiness authorBusiness;
 
@@ -41,75 +42,107 @@ public class MovieBusiness  {
         return baseRepository.getMovies();
     }
 
-    public ResponseEntity findById(String movieId) {
+    public ResponseEntity<ResponseModelMsg> findById(String movieId) {
         Movie movie = baseRepository.getMovies().stream().filter(a -> a.getId().equals(movieId)).findFirst().orElse(null);
         if (movie != null) {
-            return new ResponseEntity<Movie>(movie, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro encontrado.", 1, movie), HttpStatus.OK);
         }
-        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 1), HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity save(MovieVMInput movie) {
+    public ResponseEntity<ResponseModelMsg> save(MovieVMInput movie) {
+        List<String> msgRetorno = new ArrayList<>();
+        Movie filmeSave = new Movie();
+        try {
+            if (movie.getId() == null || movie.getId().isEmpty())
+                movie.setId("M" + (baseRepository.getMovies().size() + 1));
+            else {
+                if (findById(movie.getId()).getStatusCode() == HttpStatus.OK) {
+                    msgRetorno.add("Id do filme já foi utilizado!");
+                }
+            }
+
+            validateMovie(movie, msgRetorno);
+
+            if (!msgRetorno.isEmpty()) {
+                return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.BAD_REQUEST);
+            }
+
+            fillData(movie, filmeSave);
+
+            baseRepository.getMovies().add(filmeSave);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 1, filmeSave), HttpStatus.OK);
+        } catch (Exception e) {
+            msgRetorno.add("Erro no servidor: " + e.getMessage());
+            return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void fillData(MovieVMInput movie, Movie filmeSave) {
+        filmeSave.setId(movie.getId());
+        filmeSave.setName(movie.getName());
+        filmeSave.setReleaseDate(movie.getReleaseDate());
+        filmeSave.setCategory((MovieCategory) categoryBusiness.findById(movie.getIdCategory()).getBody().getData());
+        filmeSave.setAuthor((Author) authorBusiness.findById(movie.getIdAuthor()).getBody().getData());
+    }
+
+    public ResponseEntity<ResponseModelMsg> update(MovieVMInput movie) {
         List<String> msgRetorno = new ArrayList<>();
         Movie filmeSave = new Movie();
         try {
             if (movie.getId() == null || movie.getId().isEmpty()) {
-                movie.setId("M" + baseRepository.getMovies().size() + 1);
+                msgRetorno.add("Id do filme deve ser preechido.");
             }
-            filmeSave.setId(movie.getId());
+            validateMovie(movie, msgRetorno);
 
-            if (movie.getName() == null || movie.getName().isEmpty()) {
-                msgRetorno.add("Nome do filme deve ser preenchido!");
-            }
-            filmeSave.setName(movie.getName());
-
-            if (movie.getIdAuthor() == null || movie.getIdAuthor().isEmpty()) {
-                msgRetorno.add("Autor do filme deve ser preenchido!");
-            } else {
-                ResponseEntity author = authorBusiness.findById(movie.getIdAuthor());
-                if (author.getStatusCode() != HttpStatus.OK) {
-                    msgRetorno.add("Autor do filme Informado Incorretamente!");
-                } else {
-                    filmeSave.setAuthor((Author) author.getBody());
-                }
+            if (!msgRetorno.isEmpty()) {
+                return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.BAD_REQUEST);
             }
 
-            if (movie.getIdCategory() == null || movie.getIdCategory().isEmpty()) {
-                msgRetorno.add("Categoria do filme deve ser preenchida!");
-            } else {
-                ResponseEntity category = categoryBusiness.findById(movie.getIdCategory());
-                if (category.getStatusCode() != HttpStatus.OK) {
-                    msgRetorno.add("Categoria do filme Informada Incorretamente!");
-                } else {
-                    filmeSave.setCategory((MovieCategory) category.getBody());
-                }
-            }
+            fillData(movie, filmeSave);
 
-            if (movie.getReleaseDate() == null || movie.getReleaseDate().isEmpty()) {
-                msgRetorno.add("Data de Lançamento do filme deve ser preenchida!");
-            } else {
-                filmeSave.setReleaseDate(movie.getReleaseDate());
-            }
-
-            if (msgRetorno.size() > 0) {
-                return new ResponseEntity(msgRetorno, HttpStatus.BAD_REQUEST);
-            }
-
+            baseRepository.getMovies().remove(filmeSave);
             baseRepository.getMovies().add(filmeSave);
+            return new ResponseEntity<>(new ResponseModelMsg("Resgistro salvo com sucesso.", 1, filmeSave), HttpStatus.OK);
         } catch (Exception e) {
-            msgRetorno.add(e.getMessage());
-            return new ResponseEntity(msgRetorno, HttpStatus.INTERNAL_SERVER_ERROR);
+            msgRetorno.add("Erro no servidor: " + e.getMessage());
+            return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity(filmeSave, HttpStatus.OK);
 
     }
 
-    public ResponseEntity deleteById(String movieId) {
-        ResponseEntity deleteItem = findById(movieId);
-        if (deleteItem.getStatusCode() == HttpStatus.OK) {
-            baseRepository.getMovies().remove(deleteItem.getBody());
-            return new ResponseEntity("Registro excluido com sucesso.", HttpStatus.OK);
+    private void validateMovie(MovieVMInput movie, List<String> msgRetorno) {
+        if (movie.getName() == null || movie.getName().isEmpty()) {
+            msgRetorno.add("Nome do filme deve ser preenchido!");
         }
-        return new ResponseEntity("Registro não encontrado.", HttpStatus.BAD_REQUEST);
+
+        if ((movie.getIdAuthor() == null) || movie.getIdAuthor().isEmpty()) {
+            msgRetorno.add("Autor do filme deve ser preenchido!");
+        }
+
+        if (movie.getIdCategory() == null || movie.getIdCategory().isEmpty()) {
+            msgRetorno.add("Categoria do filme deve ser preenchida!");
+        }
+
+        if (movie.getReleaseDate() == null || movie.getReleaseDate().isEmpty()) {
+            msgRetorno.add("Data de Lançamento do filme deve ser preenchida!");
+        }
+
+        if (HttpStatus.OK != categoryBusiness.findById(movie.getIdCategory()).getStatusCode()) {
+            msgRetorno.add("Categoria do filme Informada Incorretamente!");
+        }
+
+        if (HttpStatus.OK != authorBusiness.findById(movie.getIdAuthor()).getStatusCode()) {
+            msgRetorno.add("Autor do filme Informado Incorretamente!");
+        }
+    }
+
+    public ResponseEntity<ResponseModelMsg> deleteById(String movieId) {
+        ResponseEntity<ResponseModelMsg> deleteItem = findById(movieId);
+        if (deleteItem.getStatusCode() == HttpStatus.OK) {
+            baseRepository.getMovies().remove(deleteItem.getBody().getData());
+            return new ResponseEntity<>(new ResponseModelMsg("Registro excluido com sucesso.", 1), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 1), HttpStatus.BAD_REQUEST);
     }
 }

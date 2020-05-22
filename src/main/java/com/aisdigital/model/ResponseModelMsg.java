@@ -28,6 +28,11 @@ public class ResponseModelMsg {
 
     }
 
+    public ResponseModelMsg(List<String> msgRetorno, int codeMsg) {
+        this.statusMsg = msgRetorno;
+        this.codeMsg = codeMsg;
+    }
+
     public List<String> getStatusMsg() {
         return statusMsg;
     }

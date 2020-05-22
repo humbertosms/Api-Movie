@@ -1,10 +1,8 @@
 package com.aisdigital.controller;
 
 import com.aisdigital.business.MovieCategoryBusiness;
-import com.aisdigital.model.Movie;
 import com.aisdigital.model.MovieCategory;
 import com.aisdigital.model.ResponseModelMsg;
-import com.aisdigital.model.input.MovieVMInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,24 +21,28 @@ public class MovieCategoryController {
     }
 
     @GetMapping(produces = "application/json")
-    List<MovieCategory> findAll() {
+    public List<MovieCategory> findAll() {
         return movieCategoryBusiness.findAll();
     }
 
     @GetMapping(value = "/{categoryId}", produces = "application/json")
-    ResponseEntity<MovieCategory> findById(@PathVariable String categoryId) {
+    public ResponseEntity<ResponseModelMsg> findById(@PathVariable String categoryId) {
         return movieCategoryBusiness.findById(categoryId);
     }
 
     @PostMapping( produces = "application/json")
-    ResponseEntity<MovieCategory> save(@RequestBody MovieCategory movieCategory) {
+    public ResponseEntity<ResponseModelMsg> save(@RequestBody MovieCategory movieCategory) {
         return movieCategoryBusiness.save(movieCategory);
     }
 
-    @DeleteMapping(value = "/{categoryId}", produces = "application/json")
-    ResponseEntity<ResponseModelMsg> delete(@PathVariable String categoryId) {
-        return movieCategoryBusiness.deleteById(categoryId);
+    @PutMapping( produces = "application/json")
+    public ResponseEntity<ResponseModelMsg> update(@RequestBody MovieCategory movieCategory) {
+        return movieCategoryBusiness.update(movieCategory);
     }
 
+    @DeleteMapping(value = "/{categoryId}", produces = "application/json")
+    public ResponseEntity<ResponseModelMsg> delete(@PathVariable String categoryId) {
+        return movieCategoryBusiness.deleteById(categoryId);
+    }
 
 }

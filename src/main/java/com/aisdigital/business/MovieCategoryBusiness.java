@@ -21,36 +21,57 @@ public class MovieCategoryBusiness {
         return baseRepository.getMovieCategories();
     }
 
-    public ResponseEntity findById(String categoryId) {
+    public ResponseEntity<ResponseModelMsg> findById(String categoryId) {
         MovieCategory movieCategory = baseRepository.getMovieCategories().stream().filter(a -> a.getId().equals(categoryId)).findAny().orElse(null);
         if (movieCategory != null) {
-            return new ResponseEntity<MovieCategory>(movieCategory, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro encontrado.", 2, movieCategory), HttpStatus.OK);
         }
-        return new ResponseEntity(new ResponseModelMsg("Registro não encontrado.",02), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 2), HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<MovieCategory> save(MovieCategory movieCategory) {
+    public ResponseEntity<ResponseModelMsg> save(MovieCategory movieCategory) {
         try {
             if (movieCategory.getId() == null || movieCategory.getId().isEmpty()) {
-                movieCategory.setId("C" + baseRepository.getMovieCategories().size() + 1);
+                movieCategory.setId("C" + (baseRepository.getMovieCategories().size() + 1));
             }
 
             if (movieCategory.getDescryption() == null || movieCategory.getDescryption().isEmpty()) {
-                return new ResponseEntity(new ResponseModelMsg("Descrição da categoria deve ser preechido",03), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ResponseModelMsg("Descrição da categoria deve ser preechido", 03), HttpStatus.BAD_REQUEST);
             }
             baseRepository.getMovieCategories().add(movieCategory);
-            return new ResponseEntity(movieCategory, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 2, movieCategory), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor:" + e.getMessage(), 2), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<ResponseModelMsg> update(MovieCategory movieCategory) {
+        try {
+            if (movieCategory.getId() == null || movieCategory.getId().isEmpty()) {
+                return new ResponseEntity<>(new ResponseModelMsg("Id da categoria deve ser preechido", 03), HttpStatus.BAD_REQUEST);
+            }
+
+            if (HttpStatus.OK != findById(movieCategory.getId()).getStatusCode()) {
+                return new ResponseEntity<>(new ResponseModelMsg("Id da categoria deve ser preechido", 03), HttpStatus.BAD_REQUEST);
+            }
+
+            if (movieCategory.getDescryption() == null || movieCategory.getDescryption().isEmpty()) {
+                return new ResponseEntity<>(new ResponseModelMsg("Descrição da categoria deve ser preechido", 03), HttpStatus.BAD_REQUEST);
+            }
+            baseRepository.getMovieCategories().add(movieCategory);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 3, movieCategory), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor: " + e.getMessage(), 3), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public ResponseEntity<ResponseModelMsg> deleteById(String categoryId) {
-        ResponseEntity categoria = findById(categoryId);
+        ResponseEntity<ResponseModelMsg> categoria = findById(categoryId);
         if (categoria.getStatusCode() == HttpStatus.OK) {
-            baseRepository.getMovieCategories().remove(categoria.getBody());
-            return new ResponseEntity(new ResponseModelMsg("Registro excluido com sucesso.",01), HttpStatus.OK);
-        }else
-            return new ResponseEntity(new ResponseModelMsg("Registro não encontrado.",02), HttpStatus.BAD_REQUEST);
+            MovieCategory category = (MovieCategory) categoria.getBody().getData();
+            baseRepository.getMovieCategories().remove(category);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro excluido com sucesso.", 01), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ResponseModelMsg("Registro não encontrado.", 02), HttpStatus.BAD_REQUEST);
     }
 }
