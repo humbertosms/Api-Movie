@@ -39,7 +39,7 @@ public class MovieCategoryBusiness {
                 return new ResponseEntity<>(new ResponseModelMsg("Descrição da categoria deve ser preechido", 03), HttpStatus.BAD_REQUEST);
             }
             baseRepository.getMovieCategories().add(movieCategory);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 2, movieCategory), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 2, movieCategory), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor:" + e.getMessage(), 2), HttpStatus.INTERNAL_SERVER_ERROR);
         }

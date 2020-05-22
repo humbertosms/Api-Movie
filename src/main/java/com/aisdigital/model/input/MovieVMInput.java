@@ -1,17 +1,22 @@
 package com.aisdigital.model.input;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.lang.NonNull;
 
 public class MovieVMInput {
     @ApiModelProperty(example = "Mov999")
     private String id;
-    @ApiModelProperty(example = "Filme de terror")
+    @ApiModelProperty(example = "Filme de terror" , required = true)
+    @NonNull
     private String name;
-    @ApiModelProperty(example = "A1")
+    @ApiModelProperty(example = "A1" , required = true)
+    @NonNull
     private String idAuthor;
-    @ApiModelProperty(example = "C1")
+    @ApiModelProperty(example = "C1" , required = true)
+    @NonNull
     private String idCategory;
-    @ApiModelProperty(example = "20/12/2020")
+    @ApiModelProperty(example = "20/12/2020" , required = true)
+    @NonNull
     private String releaseDate;
 
     public String getId() {

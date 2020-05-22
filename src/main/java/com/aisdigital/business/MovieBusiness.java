@@ -71,7 +71,7 @@ public class MovieBusiness {
             fillData(movie, filmeSave);
 
             baseRepository.getMovies().add(filmeSave);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 1, filmeSave), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 1, filmeSave), HttpStatus.CREATED);
         } catch (Exception e) {
             msgRetorno.add("Erro no servidor: " + e.getMessage());
             return new ResponseEntity<>(new ResponseModelMsg(msgRetorno, 1), HttpStatus.INTERNAL_SERVER_ERROR);

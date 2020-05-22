@@ -1,13 +1,15 @@
 package com.aisdigital.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
 public class MovieCategory {
     @ApiModelProperty(example = "C666")
     private String id;
-    @ApiModelProperty(example = "Terror")
+    @ApiModelProperty(example = "Terror" , required = true)
+    @NonNull
     private String descryption;
 
     public String getId() {

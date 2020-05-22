@@ -47,7 +47,7 @@ public class AuthorBusiness {
             }
 
             baseRepository.getAuthors().add(author);
-            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 5, author), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModelMsg("Registro salvo com sucesso.", 5, author), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseModelMsg("Erro no Servidor: " + e.getMessage(), 99), HttpStatus.INTERNAL_SERVER_ERROR);
         }

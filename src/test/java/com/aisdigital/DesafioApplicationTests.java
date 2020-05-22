@@ -51,7 +51,7 @@ class DesafioApplicationTests {
         MovieCategory category = new MovieCategory();
         category.setDescryption("Infantil");
         ResponseEntity<ResponseModelMsg> categoriaResponse = movieCategoryBusiness.save(category);
-        Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), categoriaResponse.getStatusCode().value());
     }
 
     @Test
@@ -62,7 +62,7 @@ class DesafioApplicationTests {
         category.setDescryption("Infantil");
 
         ResponseEntity<ResponseModelMsg> categoriaResponse = movieCategoryBusiness.save(category);
-        Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), categoriaResponse.getStatusCode().value());
 
         categoriaResponse = movieCategoryBusiness.deleteById(fixId);
         Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
@@ -79,14 +79,11 @@ class DesafioApplicationTests {
         category.setDescryption("Infantil");
 
         ResponseEntity<ResponseModelMsg> categoriaResponse = movieCategoryBusiness.save(category);
-        Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), categoriaResponse.getStatusCode().value());
 
         category.setDescryption("Horror");
 
         categoriaResponse = movieCategoryBusiness.update(category);
-        Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
-
-        categoriaResponse = movieCategoryBusiness.findById(fixId);
         Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
         Assertions.assertEquals(category.getDescryption(), ((MovieCategory) categoriaResponse.getBody().getData()).getDescryption());
     }
@@ -115,10 +112,28 @@ class DesafioApplicationTests {
     }
 
     @Test
-    void authorDelete() throws Exception {
+    void authorUpdate() throws Exception {
         Author author = new Author();
+        author.setId("H9999");
         author.setName("Humberto Silva");
         ResponseEntity<ResponseModelMsg> autor = authorBusiness.save(author);
+        Assertions.assertEquals(HttpStatus.CREATED.value(), autor.getStatusCode().value());
+
+        author.setName("Silva Humberto");
+        autor = authorBusiness.update(author);
+        Assertions.assertEquals(HttpStatus.OK.value(), autor.getStatusCode().value());
+        Assertions.assertEquals(author.getName(), ((Author) autor.getBody().getData()).getName());
+    }
+
+    @Test
+    void authorDelete() throws Exception {
+        Author author = new Author();
+        author.setId("H9999");
+        author.setName("Humberto Silva");
+        ResponseEntity<ResponseModelMsg> autor = authorBusiness.save(author);
+        Assertions.assertEquals(HttpStatus.CREATED.value(), autor.getStatusCode().value());
+
+        autor = authorBusiness.deleteById("H9999");
         Assertions.assertEquals(HttpStatus.OK.value(), autor.getStatusCode().value());
     }
 
@@ -137,7 +152,7 @@ class DesafioApplicationTests {
         movieVMInput.setName("A volta dos que não foram");
         movieVMInput.setReleaseDate("01/01/2001");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.OK.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), movie.getStatusCode().value());
     }
 
     @Test
@@ -192,7 +207,7 @@ class DesafioApplicationTests {
         movieVMInput.setName("A volta dos que não foram");
         movieVMInput.setReleaseDate("01/01/2001");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.OK.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), movie.getStatusCode().value());
 
         movie = movieBusiness.deleteById(fixId);
         Assertions.assertEquals(HttpStatus.OK.value(), movie.getStatusCode().value());
@@ -209,7 +224,7 @@ class DesafioApplicationTests {
         movieVMInput.setReleaseDate("01/01/2001");
 
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.OK.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), movie.getStatusCode().value());
 
         movieVMInput.setName("Poeira em alto mar");
         movie = movieBusiness.update(movieVMInput);
