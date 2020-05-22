@@ -68,7 +68,7 @@ class DesafioApplicationTests {
         Assertions.assertEquals(HttpStatus.OK.value(), categoriaResponse.getStatusCode().value());
 
         categoriaResponse = movieCategoryBusiness.findById(fixId);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), categoriaResponse.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), categoriaResponse.getStatusCode().value());
     }
 
     @Test
@@ -92,7 +92,7 @@ class DesafioApplicationTests {
     void authorNull() throws Exception {
         Author author = new Author();
         ResponseEntity<ResponseModelMsg> autor = authorBusiness.save(author);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), autor.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), autor.getStatusCode().value());
     }
 
     @Test
@@ -100,7 +100,7 @@ class DesafioApplicationTests {
         Author author = new Author();
         author.setId("A1");
         ResponseEntity<ResponseModelMsg> autor = authorBusiness.save(author);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), autor.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), autor.getStatusCode().value());
     }
 
     @Test
@@ -108,7 +108,7 @@ class DesafioApplicationTests {
         Author author = new Author();
         author.setName("Humberto Silva");
         ResponseEntity<ResponseModelMsg> autor = authorBusiness.save(author);
-        Assertions.assertEquals(HttpStatus.OK.value(), autor.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), autor.getStatusCode().value());
     }
 
     @Test
@@ -141,7 +141,7 @@ class DesafioApplicationTests {
     void movieEmpty() throws Exception {
         MovieVMInput movieVMInput = new MovieVMInput();
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), movie.getStatusCode().value());
     }
 
     @Test
@@ -163,7 +163,7 @@ class DesafioApplicationTests {
         movieVMInput.setName("A volta dos que não foram");
         movieVMInput.setReleaseDate("01/01/2001");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), movie.getStatusCode().value());
     }
 
     @Test
@@ -174,7 +174,7 @@ class DesafioApplicationTests {
         movieVMInput.setName("A volta dos que não foram");
         movieVMInput.setReleaseDate("01/01/2001");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), movie.getStatusCode().value());
     }
 
     @Test
@@ -184,7 +184,7 @@ class DesafioApplicationTests {
         movieVMInput.setIdCategory("C1");
         movieVMInput.setReleaseDate("01/01/2001");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), movie.getStatusCode().value());
     }
 
     @Test
@@ -194,7 +194,7 @@ class DesafioApplicationTests {
         movieVMInput.setIdCategory("C1");
         movieVMInput.setName("A volta dos que não foram");
         ResponseEntity<ResponseModelMsg> movie = movieBusiness.save(movieVMInput);
-        Assertions.assertEquals(HttpStatus.BAD_GATEWAY.value(), movie.getStatusCode().value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), movie.getStatusCode().value());
     }
 
     @Test
